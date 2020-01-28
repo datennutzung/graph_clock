@@ -55,11 +55,10 @@ function drawGraphClockCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height) // reset before drawing again
     drawCoordinateSystem(ctx);
     drawGrid(ctx);
-    //drawTimeDot(time, ctx);
-    //drawHourLine(time, ctx);
-    //drawMinuteLines(time, ctx);
-    //drawSecondDots(time, ctx);
-    //checkAlignment(time);
+    drawTimeDot(time, ctx);
+    drawHourLine(time, ctx);
+    drawMinuteLines(time, ctx);
+    drawSecondDots(time, ctx);
 }
 
 function drawCoordinateSystem(ctx) {
@@ -101,5 +100,21 @@ function drawCoordinateSystem(ctx) {
 
 
 function drawGrid(ctx) {
+    // TODO: Draw Grid
+}
 
+function drawTimeDot(time, ctx) {
+    // TODO: Draw Time Dot
+}
+
+function drawHourLine(time, ctx) {
+    // TODO: Draw Hour Line
+}
+
+function drawMinuteLines(time, ctx) {
+    // TODO: Draw Minute Line
+}
+
+function drawSecondDots(time, ctx) {
+    // TODO: Draw Second Dots
 }
