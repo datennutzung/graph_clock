@@ -1,9 +1,11 @@
+// global variables
 var canvas;
 var label;
 var intervar;
 var context;
-var frameNumber = 0;
+var frameNumber = 0;                                                            // to be removed
 
+// settings object
 const s = {
     gridpx: 120,
     coord_height: 100,
@@ -18,7 +20,7 @@ const s = {
     secondDotsCount: 15,
     
     hourLineColour: '#00ff00',
-    minuteLineColour: '#ff0000',
+    minuteLinesColour: '#ff0000',
     secondDotsColour: '#ffff00',
     timeDotColour: '#ff0000',
     gridColour: '#cccccc',
@@ -32,50 +34,51 @@ function _init() {
     s.coord_width = s.gridpx*12;
     canvas = document.getElementById("graphClockCanvas");
     label = document.getElementById("frameTimeLabel");
-    canvas.width = s.coord_width + s.edge * 2
-    canvas.height = s.coord_height + s.edge * 2
+    canvas.width = s.coord_width + s.edge * 2;
+    canvas.height = s.coord_height + s.edge * 2;
     context = canvas.getContext("2d");
     context.translate(0.5, 0.5);
     drawOnce(); // remove. --> startInterval();
 }
 
 function x(number) {
-    return s.edge+number*s.gridpx
+    return s.edge+number*s.gridpx;                                              // calculates canvas x coordinates from "coordinate system" x coordinates
 }
 
 function y(number) {
-    return s.coord_height+s.edge-number*s.gridpx
+    return s.coord_height+s.edge-number*s.gridpx;                               // calculates canvas y coordinates from "coordinate system" y coordinates
 }
 
 function startInterval() {
-    intervar = setInterval(drawGraphClockCanvas, s.refresh_time)
+    intervar = setInterval(drawGraphClockCanvas, s.refresh_time);               // start the interval
 }
 
 function stopInterval() {
-    clearInterval(intervar);
+    clearInterval(intervar);                                                    // stop the interval
 }
 
 function drawOnce() {
-    drawGraphClockCanvas();
+    drawGraphClockCanvas();                                                     // draw one frame
 }
 
 function drawGraphClockCanvas() {
-    let time = new Date();
+    let time = new Date();                                                      // get current time         test: 2020, 1, 30, 15, 30, 0, 0
     let hours = time.getHours()>12?time.getHours()-12:time.getHours();          // get hours in 12h format
     let minutes = time.getMinutes();
     let seconds = time.getSeconds();
+    let timeX = hours+(minutes/60)+(seconds/3600);                              // the time's x-value on the grid
     let ctx = context;
-    ctx.clearRect(0, 0, canvas.width, canvas.height)                            // reset before drawing again
+    ctx.clearRect(0, 0, canvas.width, canvas.height);                           // reset before drawing again
     ctx.lineWidth = 1;
-    drawCoordinateSystem(ctx);
-    drawGrid(ctx);
-    drawTimeDot(hours, minutes, seconds, ctx);
-    drawHourLine(hours, minutes, seconds , ctx);
-    drawMinuteLines(hours, minutes, seconds, ctx);
-    drawSecondDots(hours, minutes, seconds, ctx);
-    frameNumber++;
-    let timeEnd = new Date();
-    label.innerText = "Frame Time: "+(timeEnd.getTime()-time.getTime())+" / Frame Number: "+frameNumber;
+    drawCoordinateSystem(ctx);                                                  // draw coordinate system
+    drawGrid(ctx);                                                              // draw grid
+    drawTimeDot(timeX, ctx);                                                    // draw the time dot
+    drawHourLine(timeX, ctx);                                                   // draw the hour line
+    drawMinuteLines(timeX, hours, minutes, seconds, ctx);                       // draw the minute lines
+    drawSecondDots(timeX, hours, minutes, seconds, ctx);                        // draw the second dots
+    frameNumber++;                                                                                              //
+    let timeEnd = new Date();                                                                                   //  to be removed
+    label.innerText = "Frame Time: "+(timeEnd.getTime()-time.getTime())+" / Frame Number: "+frameNumber;        //
 }
 
 function drawCoordinateSystem(ctx) {
@@ -96,11 +99,11 @@ function drawCoordinateSystem(ctx) {
             ctx.fillText(i, x(i)-s.text_size*0.3, y(0)+s.text_size);            // draw numbers
         if (i != 12)
             for (let o = 0; o <= 12; o++) {                                     // draw small dashes every 5 minutes
-                ctx.moveTo(x(i+o/12), y(0))
-                ctx.lineTo(x(i+o/12), y(0)+s.small_dash)
+                ctx.moveTo(x(i+o/12), y(0));
+                ctx.lineTo(x(i+o/12), y(0)+s.small_dash);
             }
-        ctx.moveTo(x(i), y(0)-s.big_dash)                                       // draw big dashes every hour
-        ctx.lineTo(x(i), y(0)+s.big_dash)
+        ctx.moveTo(x(i), y(0)-s.big_dash);
+        ctx.lineTo(x(i), y(0)+s.big_dash);                                      // draw big dashes every hour
     }
     ctx.stroke();
 
@@ -109,11 +112,11 @@ function drawCoordinateSystem(ctx) {
             ctx.fillText(i*15, x(0)-s.text_size*1.5, y(i)+s.text_size*0.25);    // draw numbers
         if (i != 4)
             for (let o = 0; o <= 15; o++) {                                     // draw the small dashes for every minute
-                ctx.moveTo(x(0), y(i+o/15))
-                ctx.lineTo(x(0)-s.small_dash, y(i+o/15))
+                ctx.moveTo(x(0), y(i+o/15));
+                ctx.lineTo(x(0)-s.small_dash, y(i+o/15));
             }
-        ctx.moveTo(x(0)-s.big_dash, y(i))                                       // draw big dashes for every quarter hour
-        ctx.lineTo(x(0)+s.big_dash, y(i))
+        ctx.moveTo(x(0)-s.big_dash, y(i));
+        ctx.lineTo(x(0)+s.big_dash, y(i));                                      // draw big dashes for every quarter hour
     }
     ctx.stroke();
 }
@@ -133,31 +136,40 @@ function drawGrid(ctx) {
     ctx.stroke();
 }
 
-function drawTimeDot(hours, minutes, seconds, ctx) {
+function drawTimeDot(timeX, ctx) {
     ctx.beginPath();
-    ctx.strokeStyle = s.timeDotColour;
-    ctx.fillStyle = s.timeDotColour;
-    let timeX = hours+(minutes/60)+(seconds/3600);
-    ctx.arc(x(timeX), y(0), s.timeDotRadius, 0, 2*Math.PI);
-    ctx.fill();
+    ctx.strokeStyle = s.timeDotColour;                                          // set strokestyle of time dot
+    ctx.fillStyle = s.timeDotColour;                                            // set fillstyle of time dot
+    ctx.arc(x(timeX), y(0), s.timeDotRadius, 0, 2*Math.PI);                     // draw a small circle at the time dot
+    ctx.fill();                                                                 // fill the circle
     ctx.stroke();
 }
 
-function drawHourLine(hours, minutes, seconds, ctx) {
+function drawHourLine(timeX, ctx) {
     ctx.beginPath();
     ctx.strokeStyle = s.hourLineColour;                                         // set strokestyle of hour line
     ctx.lineWidth = 2;                                                          // the hour line is thicker
-    let timeX = hours+(minutes/60)+(seconds/3600);                              // x position of the line end is the same as the time dot
-    let timeY = timeX/3                                                         // y position of the line end is 1/3 of x-pso because line is linear
-    ctx.moveTo(x(0), y(0))                                                      //      and coordinate system has a aspect ratio of 1:3
+    let timeY = timeX/3;                                                        // y position of the line end is 1/3 of x-pos because line is linear
+    ctx.moveTo(x(0), y(0));                                                     //      and coordinate system has a aspect ratio of 1:3
     ctx.lineTo(x(timeX), y(timeY));                                             // draw the hour line
     ctx.stroke();
 }
 
-function drawMinuteLines(hours, minutes, seconds, ctx) {
-    // TODO: Draw Minute Line
+function drawMinuteLines(timeX, hours, minutes, seconds, ctx) {
+    ctx.beginPath();
+    ctx.strokeStyle = s.minuteLinesColour;
+    ctx.lineWidth = 1;
+    let timeY = minutes/15+seconds/900;
+    for (let i = 0; i < hours; i++) {
+        ctx.moveTo(x(i), y(0));
+        ctx.lineTo(x(i+1), y(4));
+    }
+    ctx.moveTo(x(hours), y(0));
+    ctx.lineTo(x(timeX), y(timeY))
+
+    ctx.stroke();
 }
 
-function drawSecondDots(hours, minutes, seconds, ctx) {
+function drawSecondDots(timeX, hours, minutes, seconds, ctx) {
     // TODO: Draw Second Dots
 }
