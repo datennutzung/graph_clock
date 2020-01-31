@@ -155,9 +155,9 @@ function drawTimeDot(timeX, time, ctx) {
     ctx.lineTo(x(timeX), y(0)+s.text_size*1.5);
     ctx.stroke();
     ctx.textAlign = "center";
-    let hours = time.getHours()>10?
+    let hours = time.getHours()>=10?
             ""+time.getHours():"0"+time.getHours();
-    let minutes = time.getMinutes()>10?
+    let minutes = time.getMinutes()>=10?
             ""+time.getMinutes():"0"+time.getMinutes();
     ctx.fillText(hours+":"+minutes, x(timeX), y(0)+s.text_size*2.25);           // write the current time under the time dot
 }
