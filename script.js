@@ -17,19 +17,21 @@ const s = {
     small_dash: 2,
     timeDotRadius: 4,
     secondDotRadius: 2,
+    minuteDotRadius: 1.5,
+    hourDotRadius: 2,
 
     normalLineWidth: 1,
-    hourLineWidth: 2,
-    minuteLineWidth: 1,
-    secondLineWidth: 1,
+    hourLineWidth: 3,
+    minuteLineWidth: 1.5,
+    secondLineWidth: 1.25,
     coordLineWidth: 1,
     gridLineWidth: 1,
     
-    hourLineColour: '#00ff00',
-    minuteLinesColour: '#ff0000',
-    secondDotColour: '#0000ff',
-    timeDotColour: '#ff0000',
-    gridColour: '#cccccc',
+    hourLineColour: '#97FF26',
+    minuteLinesColour: '#FF3800',
+    secondDotColour: '#0A2EB3',
+    timeDotColour: '#E05D38',
+    gridColour: '#CCCCCC',
     coordColour: '#000000',
 };
 
@@ -68,7 +70,7 @@ function drawOnce() {
 }
 
 function drawGraphClockCanvas() {
-    let time = new Date();                                                      // get current time         test: 2020, 1, 30, 15, 30, 0, 0
+    let time = new Date();                                                      // get current time
     let hours = time.getHours()>12?time.getHours()-12:time.getHours();          // get hours in 12h format
     let minutes = time.getMinutes();
     let seconds = time.getSeconds();
@@ -83,7 +85,7 @@ function drawGraphClockCanvas() {
     drawTimeDot(timeX, time, ctx);                                                    // draw the time dot
     drawHourLine(timeX, ctx);                                                   // draw the hour line
     drawMinuteLines(timeX, hours, minutes, seconds, ctx);                       // draw the minute lines
-    drawSecondLine(timeX, seconds, milliseconds, ctx);                          // draw the second dots
+    drawSecondDot(timeX, seconds, milliseconds, ctx);                          // draw the second dots
 }
 
 function drawCoordinateSystem(ctx) {
@@ -146,6 +148,7 @@ function drawTimeDot(timeX, time, ctx) {
     ctx.beginPath();
     ctx.strokeStyle = s.timeDotColour;                                          // set strokestyle of time dot
     ctx.fillStyle = s.timeDotColour;                                            // set fillstyle of time dot
+    ctx.lineWidth = s.secondLineWidth;
     ctx.arc(x(timeX), y(0), s.timeDotRadius, 0, 2*Math.PI);                     // draw a small circle at the time dot
     ctx.fill();                                                                 // fill the circle
     ctx.moveTo(x(timeX), y(0));
@@ -166,6 +169,7 @@ function drawHourLine(timeX, ctx) {
     let timeY = timeX/3;                                                        // y position of the line end is 1/3 of x-pos because line is linear
     ctx.moveTo(x(0), y(0));                                                     //      and coordinate system has a aspect ratio of 1:3
     ctx.lineTo(x(timeX), y(timeY));                                             // draw the hour line
+    ctx.arc(x(timeX), y(timeY), s.hourDotRadius, 0, 2*Math.PI);
     ctx.stroke();
 }
 
@@ -180,14 +184,15 @@ function drawMinuteLines(timeX, hours, minutes, seconds, ctx) {
     }
     ctx.moveTo(x(hours), y(0));
     ctx.lineTo(x(timeX), y(timeY));                                             // draw the new minute line
+    ctx.arc(x(timeX), y(timeY), s.minuteDotRadius, 0, 2*Math.PI);
     ctx.stroke();
 }
 
-function drawSecondLine(timeX, seconds, milliseconds, ctx) {
+function drawSecondDot(timeX, seconds, milliseconds, ctx) {
     ctx.beginPath();
-    ctx.strokeStyle = s.secondDotColour;
+    ctx.strokeStyle = s.secondDotColour;                                        // set strokestyle fo second dot
     ctx.lineWidth = s.secondLineWidth;
-    let timeY = seconds/15+milliseconds/15000;
-    ctx.arc(x(timeX), y(timeY), s.secondDotRadius, 0, 2*Math.PI);
+    let timeY = seconds/15+milliseconds/15000;                                  // calculate the y opsition of the second dot
+    ctx.arc(x(timeX), y(timeY), s.secondDotRadius, 0, 2*Math.PI);               // draw the second dot
     ctx.stroke();
 }
