@@ -1,6 +1,7 @@
 // global variables
 var canvas;
 var label;
+
 var intervar;
 var context;
 
@@ -40,8 +41,10 @@ _init();
 function _init() {
     s.coord_height = s.gridpx*4;
     s.coord_width = s.gridpx*12;
+    
     canvas = document.getElementById("graphClockCanvas");
-    label = document.getElementById("frameTimeLabel");
+    label = document.getElementById("distanceLabel");
+
     canvas.width = s.coord_width + s.edge * 2;
     canvas.height = s.coord_height + s.edge * 2;
     context = canvas.getContext("2d");
@@ -71,11 +74,11 @@ function drawOnce() {
 
 function drawGraphClockCanvas() {
     let time = new Date();                                                      // get current time
-    let hours = time.getHours()>12?time.getHours()-12:time.getHours();          // get hours in 12h format
+    let hours = time.getHours()>=12?time.getHours()-12:time.getHours();         // get hours in 12h format
     let minutes = time.getMinutes();
     let seconds = time.getSeconds();
     let milliseconds = time.getMilliseconds();
-    let timeX = hours+(minutes/60)+(seconds/3600);                              // the time's x-value on the grid
+    let timeX = hours+(minutes/60)+(seconds/3600)+(milliseconds/3600000);     // the time's x-value on the grid
     let ctx = context;
     ctx.clearRect(0, 0, canvas.width, canvas.height);                           // reset before drawing again
     ctx.lineWidth = s.normalLineWidth;
@@ -84,8 +87,9 @@ function drawGraphClockCanvas() {
     drawGrid(ctx);                                                              // draw grid
     drawTimeDot(timeX, time, ctx);                                                    // draw the time dot
     drawHourLine(timeX, ctx);                                                   // draw the hour line
-    drawMinuteLines(timeX, hours, minutes, seconds, ctx);                       // draw the minute lines
-    drawSecondDot(timeX, seconds, milliseconds, ctx);                          // draw the second dots
+    drawMinuteLines(timeX, hours, minutes, seconds, milliseconds, ctx);         // draw the minute lines
+    drawSecondDot(timeX, seconds, milliseconds, ctx);                           // draw the second dots
+    checkAlignment(timeX, minutes, seconds, milliseconds)
 }
 
 function drawCoordinateSystem(ctx) {
@@ -173,11 +177,11 @@ function drawHourLine(timeX, ctx) {
     ctx.stroke();
 }
 
-function drawMinuteLines(timeX, hours, minutes, seconds, ctx) {
+function drawMinuteLines(timeX, hours, minutes, seconds, milliseconds, ctx) {
     ctx.beginPath();
     ctx.strokeStyle = s.minuteLinesColour;                                      // set strokestyle of minute lines
     ctx.lineWidth = s.minuteLineWidth;
-    let timeY = minutes/15+seconds/900;                                         // the y-pos of last minute line
+    let timeY = minutes/15+seconds/900+milliseconds/900000;                     // the y-pos of last minute line
     for (let i = 0; i < hours; i++) {                                           // draw the old minute lines
         ctx.moveTo(x(i), y(0));
         ctx.lineTo(x(i+1), y(4));
@@ -195,4 +199,15 @@ function drawSecondDot(timeX, seconds, milliseconds, ctx) {
     let timeY = seconds/15+milliseconds/15000;                                  // calculate the y opsition of the second dot
     ctx.arc(x(timeX), y(timeY), s.secondDotRadius, 0, 2*Math.PI);               // draw the second dot
     ctx.stroke();
+}
+
+function checkAlignment(timeX, minutes, seconds, milliseconds) {
+    let hourY = y(timeX/3);
+    let minuteY = y(minutes/15+seconds/900+milliseconds/900000);
+    let secondY = y(seconds/15+milliseconds/15000);
+    let d_hm = Math.round(Math.abs(hourY-minuteY));
+    let d_ms = Math.round(Math.abs(minuteY-secondY));
+    let d_hs = Math.round(Math.abs(hourY-secondY));
+    let d_all = Math.round((d_hm+d_ms+d_hs)/3);
+    label.innerText = "Distance: "+d_all+"px";
 }
