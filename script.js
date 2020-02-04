@@ -1,7 +1,7 @@
 // global variables
 var canvas;
 var label;
-
+var addTime;
 var intervar;
 var context;
 
@@ -45,6 +45,7 @@ function _init() {
     canvas = document.getElementById("graphClockCanvas");
     label = document.getElementById("distanceLabel");
 
+    addTime = 0;
     canvas.width = s.coord_width + s.edge * 2;
     canvas.height = s.coord_height + s.edge * 2;
     context = canvas.getContext("2d");
@@ -73,7 +74,7 @@ function drawOnce() {
 }
 
 function drawGraphClockCanvas() {
-    let time = new Date();                                                      // get current time
+    let time = new Date(Date.now()+addTime);                                    // get current time
     let hours = time.getHours()>=12?time.getHours()-12:time.getHours();         // get hours in 12h format
     let minutes = time.getMinutes();
     let seconds = time.getSeconds();
@@ -89,7 +90,7 @@ function drawGraphClockCanvas() {
     drawHourLine(timeX, ctx);                                                   // draw the hour line
     drawMinuteLines(timeX, hours, minutes, seconds, milliseconds, ctx);         // draw the minute lines
     drawSecondDot(timeX, seconds, milliseconds, ctx);                           // draw the second dots
-    checkAlignment(timeX, minutes, seconds, milliseconds)
+    checkAlignment(timeX, minutes, seconds, milliseconds);
 }
 
 function drawCoordinateSystem(ctx) {
@@ -202,12 +203,11 @@ function drawSecondDot(timeX, seconds, milliseconds, ctx) {
 }
 
 function checkAlignment(timeX, minutes, seconds, milliseconds) {
-    let hourY = y(timeX/3);
-    let minuteY = y(minutes/15+seconds/900+milliseconds/900000);
-    let secondY = y(seconds/15+milliseconds/15000);
-    let d_hm = Math.round(Math.abs(hourY-minuteY));
-    let d_ms = Math.round(Math.abs(minuteY-secondY));
-    let d_hs = Math.round(Math.abs(hourY-secondY));
-    let d_all = Math.round((d_hm+d_ms+d_hs)/3);
+    let hourY = timeX/3;
+    let minuteY = minutes/15+seconds/900+milliseconds/900000;
+    let secondY = seconds/15+milliseconds/15000;
+    let d_hm = Math.round(hourY>=minuteY?y(minuteY)-y(hourY):y(minuteY)-y(4)+y(0)-y(hourY));
+    let d_hs = Math.round(hourY>=secondY?y(secondY)-y(hourY):y(secondY)-y(4)+y(0)-y(hourY));;
+    let d_all = d_hm>10?d_hm:d_hm+"px, Second Distance: "+d_hs;
     label.innerText = "Distance: "+d_all+"px";
 }
