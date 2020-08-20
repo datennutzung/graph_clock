@@ -26,19 +26,13 @@ const s = {
     minuteLineWidth: 1.5,
     secondLineWidth: 1.25,
     coordLineWidth: 1,
-    gridLineWidth: 1,
-    
-    hourLineColour: '#97FF26',
-    minuteLinesColour: '#FF3800',
-    secondDotColour: '#0A2EB3',
-    timeDotColour: '#E05D38',
-    gridColour: '#CCCCCC',
-    coordColour: '#000000',
+    gridLineWidth: 1
 };
 
-_init();
+function init() {
 
-function _init() {
+    s.gridpx = (window.innerWidth-150)/12
+
     s.coord_height = s.gridpx*4;
     s.coord_width = s.gridpx*12;
     
@@ -50,7 +44,21 @@ function _init() {
     canvas.height = s.coord_height + s.edge * 2;
     context = canvas.getContext("2d");
     context.translate(0.5, 0.5);
+    stopInterval();
     startInterval();
+
+    window.addEventListener('resize', init);
+
+    s.hourLineColour = '#97FF26';
+    s.minuteLinesColour = '#FF3800';
+    s.secondDotColour = getVar("--secondary");
+    s.timeDotColour = '#E05D38';
+    s.gridColour = getVar("--light-");
+    s.coordColour = getVar("--light");
+}
+
+function getVar(cssVar) {
+    return getComputedStyle(document.documentElement).getPropertyValue(cssVar)
 }
 
 function x(number) {

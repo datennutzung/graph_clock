@@ -2,16 +2,39 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Graph Clock</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
+        
+        <!-- External Links -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+        <!-- My Customization -->
         <link type="text/css" rel="stylesheet" href="./style.css">
+        <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
+        <script type="text/javascript" src="./script.js"></script>
+        <title>Graph Clock</title>
     </head>
     <body>
-        <canvas id="graphClockCanvas" width="100" height="100" style="border:1px solid #000000;"></canvas>
-        <br>
-        <label id="distanceLabel"></label>
-        <script type="text/javascript" src="./script.js"></script>
+        <header>
+            <a href="https://datennutzung.github.io/" title="Home">
+                <img src="https://raw.githubusercontent.com/datennutzung/datennutzung/master/logo.png" alt="Logo" class="circle" id="logo" />
+            </a>
+            <h1>Graph Clock</h1>
+            <a href="https://github.com/datennutzung/graph_clock/" id="gh_mark">
+                <img src="https://raw.githubusercontent.com/datennutzung/datennutzung/master/GitHubMarkBig.png" alt="GitHub" class="circle"/>
+            </a>
+        </header>
+        <main>
+            <canvas id="graphClockCanvas" width="100" height="100"></canvas>
+            <br>
+            <label id="distanceLabel"></label>
+        </main>
+        <footer>
+            &copy; 2020 - Miron Gertis
+        </footer>
     </body>
+    <script type="text/javascript">
+        window.onload = function(e) { 
+            init()
+        }
+    </script>
 </html>
