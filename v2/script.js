@@ -93,8 +93,8 @@ function drawGraphClockCanvas() {
     drawCoordinateSystem(ctx);                                                  // draw coordinate system
     drawGrid(ctx);                                                              // draw grid
     drawTimeDot(timeX, time, ctx)
-    drawHourCurve(timeX, ctx)
     drawMinuteCurve(timeX, ctx)
+    drawHourCurve(timeX, ctx)
     drawSecondsDot(timeX, ctx);
 }
 
@@ -155,25 +155,28 @@ function drawGrid(ctx) {
     ctx.stroke();
 }
 
-function calcSineY(ix, freq) {
-    ix = ix - s.edge
-    freqFrac = freq / s.coord_width
-    amp = (y(0) - y(4)) / 2
-    iy = amp - amp * Math.sin(ix * 2 * Math.PI * freqFrac + (Math.PI / 2))
-    return iy + s.edge;
+function calcSineY(cX, freq) {
+    cX = cX - s.edge
+    let freqFrac = freq / s.coord_width
+    let amp = (y(0) - y(4)) / 2
+    let cY = amp - amp * Math.sin(cX * 2 * Math.PI * freqFrac + (Math.PI / 2))
+    return cY + s.edge;
 }
 
 function drawCurve(timeX, freq, strokeStyle, lineWidth, dotRadius, ctx) {
     ctx.beginPath();
     ctx.strokeStyle = strokeStyle;
     ctx.lineWidth = lineWidth;
-    j = y(4)
-    for (let i = x(0); i < x(timeX); i++) {
-        ctx.moveTo(i, j);
-        j = calcSineY(i, freq)
-        ctx.lineTo(i, j)
+    let cY = y(4)
+    for (let cX = x(0); cX < x(timeX); cX++) {
+        ctx.moveTo(cX, cY);
+        cY = calcSineY(cX, freq)
+        ctx.lineTo(cX, cY)
     }
-    ctx.arc(x(timeX), j, dotRadius, 0, 2 * Math.PI);
+    cX = x(timeX)
+    cY = calcSineY(cX, freq)
+    ctx.lineTo(cX, cY)
+    ctx.arc(cX, cY, dotRadius, 0, 2 * Math.PI);
     ctx.stroke();
 }
 
