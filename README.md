@@ -9,4 +9,5 @@ this clock shows you the postion of all three clock hands.
 The Y-Axis shows the position of the hands on the clock as minutes,  
 the X-Axis shows the current time in a 12h format.
 
-> Made by Miron
+In version 2, the Y-Axis shows the *"height"* of each hand,  
+making beautiful curves.
