@@ -124,11 +124,9 @@ function drawCoordinateSystem(ctx) {
     }
     ctx.stroke();
 
+    let texts = ["0%", "50%", "100%"]
     for (let i = 0; i <= 2; i++) {                                              // y-axis
-        text = `${(2 - i) * 90}°`;
-        if (i == 1)
-            text = `±${(2 - i) * 90}°`;
-        ctx.fillText(text, x(0) - s.text_size * (text.length * .65), y(i * 2) + s.text_size * 0.25);    // draw numbers
+        ctx.fillText(texts[i], x(0) - s.text_size * (texts[i].length * .7), y(i * 2) + s.text_size * 0.25);    // draw numbers
         if (i != 2)
             for (let o = 0; o <= 30; o++) {
                 ctx.moveTo(x(0), y(i * 2 + o / 15));
